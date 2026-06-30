@@ -2,485 +2,584 @@
 <html lang="en">
 <head>
 <!--
-  DESIGN SYSTEM — Golden Touch Cleaning Services
-  Product type: Local eco-cleaning + caring senior home-support (wellness × hospitality × care)
-  Emotional register: warmth + trust + dignity — calm, human, artisanal, premium-but-approachable
-
-  COLOR (from her real brand, warmed toward parchment for the care register)
-  Forest:     #15281C — deep forest near-black; brand anchor + dark editorial sections
-  Green:      #3E6B45 — living leaf green; organic secondary
-  Gold:       #C29B40 — metallic gold; ACCENT (decorative / on-dark / large only)
-  Gold-deep:  #7C6220 — gold for small text on light (passes AA)
-  Parchment:  #F4ECDA — warm cream background (never clinical white)
-  Surface:    #FCF8EE — warm white card surface
-  Text:       #1F2D1E — deep green-charcoal on cream
-  Muted:      #5B6A54 — warm sage-taupe
-
-  TYPOGRAPHY
-  Display: Fraunces (opsz serif) — artisanal warmth, literary, human; carries the founding story
-  Body:    Nunito — warm + rounded + highly legible (kind to older eyes and adult-child readers)
-  Scale:   tight editorial + clamp() hero; italic Fraunces for pull-quotes
-
-  LAYOUT
-  Structure: editorial/asymmetric — split hero (copy 58 / organic arch 42), full-bleed forest
-             STORY section as the emotional core, content-prioritized services (one large
-             Senior Support panel + three accent-border cards), tactile craft section,
-             oversized testimonial pull-quotes. NOT hero→3 cards→CTA.
-  Key choice: her founding story carries the most editorial weight; Senior Support is the
-             largest, first service — the layout mirrors what actually matters most.
-
-  COMPONENT CRAFT: accent-border cards (border grows on hover), slide-fill + sheen buttons,
-             SVG noise texture on craft band, staggered entrances, gold focus rings, organic
-             arched frames instead of rectangles + drop-shadows.
+  DESIGN SYSTEM — Golden Touch (v5.1 · "Apple-scroll, dialed up + hardened")
+  Built on v3 (apple.html). Same brand & content — dramatic, PURPOSEFUL scroll choreography,
+  then hardened via an adversarial multi-lens review (iOS-Safari, low-end-mobile perf, a11y, craft).
+  TECHNIQUE  position:sticky scenes + a scroll listener turning scroll into a 0→1 number fed into CSS,
+             continuously (no GSAP, no images, no canvas, no deps).
+  WOW MOVES  (1) Pinned hero — headline hands off to the product panel, which scales up & SETTLES.
+             (2) Showpiece — scroll to wipe a surface clean with an ANGLED squeegee (gold light glued
+                 to the diagonal dirt edge), a mist puff leading the edge, a sparkle trail behind it.
+             (3) Stronger feature-row parallax.
+  HARDENING  -webkit- prefixes (clip-path, backdrop-filter), color-mix() solid fallbacks, compositor
+             transforms instead of `left`, baked smudges, viewport-gated twinkle, skip link + <main>,
+             AA contrast, 44px tap target, reduced-motion/no-JS show a labeled clean surface.
+  COLOR   ink #15241B / forest #14271B / green #3E6B45 / gold #C29B40 / warm near-white #FBF8F0
+  TYPE    Manrope (Apple-style weight contrast) + Fraunces italic (soul/accents)
 -->
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Golden Touch Cleaning Services — A Higher Standard of Clean</title>
-<meta name="description" content="Eco-friendly, non-toxic cleaning and caring senior home support in Espanola, Massey & Manitoulin Island. A higher standard of clean." />
+<meta name="description" content="Eco-friendly, non-toxic cleaning and caring senior home support in Espanola, Massey & Manitoulin Island." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500;0,9..144,500&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --forest:#15281C; --forest-2:#1C3525; --green:#3E6B45; --green-soft:#6E9466;
-    --gold:#C29B40; --gold-lt:#DCC074; --gold-deep:#7C6220;
-    --bg:#F4ECDA; --bg-2:#EFE5CF; --surface:#FCF8EE; --surface-2:#FBF4E4;
-    --text:#1F2D1E; --muted:#5B6A54; --border:#E2D6BC; --border-soft:#EBE0C8;
-    --font-d:'Fraunces', Georgia, 'Times New Roman', serif;
-    --font-b:'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --sh-card:0 14px 34px -22px rgba(21,40,28,.34);
-    --sh-float:0 22px 50px -20px rgba(21,40,28,.5);
-    --u1:8px; --u2:16px; --u3:24px; --u4:40px; --u5:64px; --u6:96px;
+    --ink:#15241B; --ink-2:#3c4a39; --forest:#14271B; --forest-2:#1d3727;
+    --green:#3E6B45; --green-soft:#74996B; --gold:#C29B40; --gold-lt:#DCC074; --gold-deep:#7C6220;
+    --bg:#FBF8F0; --bg-2:#F3ECDD; --line:#E8DEC8; --white:#FFFFFF;
+    --d:'Manrope', system-ui, -apple-system, sans-serif;
+    --serif:'Fraunces', Georgia, serif;
+    --sh:0 30px 70px -34px rgba(20,39,27,.5);
+    --pad:clamp(80px,12vw,168px);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{font-family:var(--font-b);color:var(--text);background:var(--bg);font-size:17px;line-height:1.68;font-weight:500;-webkit-font-smoothing:antialiased}
-  h1,h2,h3,h4{font-family:var(--font-d);font-weight:500;line-height:1.08;letter-spacing:-.02em}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:var(--d);background:var(--bg);color:var(--ink);font-size:18px;line-height:1.6;font-weight:400;-webkit-font-smoothing:antialiased;letter-spacing:-.01em;overflow-x:hidden}
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
   ::selection{background:var(--gold);color:var(--forest)}
-  :focus-visible{outline:2.5px solid var(--gold-deep);outline-offset:3px;border-radius:3px}
+  :focus-visible{outline:2.5px solid var(--gold-deep);outline-offset:4px;border-radius:4px}
+  .wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 28px}
+  .eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.04em;color:var(--gold-deep)}
+  .eyebrow.dk{color:var(--gold-lt)}
 
-  .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 26px}
-  .read{max-width:660px}
-  .eyebrow{font-family:var(--font-b);font-size:.74rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);display:inline-flex;align-items:center;gap:.6em}
-  .eyebrow::before{content:'';width:26px;height:1.5px;background:var(--gold);display:inline-block}
-  .eyebrow.on-dark{color:var(--gold-lt)}
-  .eyebrow.center{justify-content:center}
+  /* skip link — one Tab from load to the phone number */
+  .skip{position:absolute;left:8px;top:-60px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:100;font-weight:700;transition:top .15s}
+  .skip:focus{top:8px}
 
-  /* ── draft strip ── */
-  .draft{background:var(--forest);color:var(--gold-lt);text-align:center;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:8px 12px}
+  .draft{background:var(--forest);color:var(--gold-lt);text-align:center;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:8px}
 
-  /* ── nav ── */
-  header.nav{position:sticky;top:0;z-index:60;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-soft)}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 26px;max-width:1180px;margin:0 auto}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand .seal{flex:0 0 auto}
-  .brand b{font-family:var(--font-d);font-weight:600;font-size:1.28rem;color:var(--forest);line-height:1;letter-spacing:-.01em}
-  .brand small{display:block;font-family:var(--font-b);font-size:.56rem;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);margin-top:4px;font-weight:700}
+  /* scroll progress bar (the 0→1 made visible) */
+  #prog{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;background:linear-gradient(90deg,var(--gold-deep),var(--gold),var(--gold-lt));z-index:90;will-change:transform}
 
-  /* ── buttons ── */
-  .btn{font-family:var(--font-b);font-weight:800;font-size:1rem;cursor:pointer;border:0;display:inline-flex;align-items:center;justify-content:center;gap:.5em;line-height:1;letter-spacing:.01em}
-  .btn-primary{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--gold-lt),var(--gold));color:#2c2410;padding:15px 26px;border-radius:999px;box-shadow:0 12px 26px -14px rgba(194,155,64,.8);transition:transform .18s cubic-bezier(.34,1.56,.64,1)}
-  .btn-primary::before{content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);transition:left .6s ease}
-  .btn-primary:hover{transform:scale(1.035)}
-  .btn-primary:hover::before{left:140%}
-  .btn-line{position:relative;overflow:hidden;background:transparent;border:1.6px solid var(--forest);color:var(--forest);padding:14px 24px;border-radius:999px;z-index:0;transition:color .3s ease}
-  .btn-line::before{content:'';position:absolute;inset:0;background:var(--forest);transform:translateY(101%);transition:transform .32s cubic-bezier(.4,0,.2,1);z-index:-1}
-  .btn-line:hover{color:var(--surface)}
-  .btn-line:hover::before{transform:translateY(0)}
-  .btn-line.on-dark{border-color:rgba(244,236,218,.5);color:var(--bg)}
-  .btn-line.on-dark::before{background:var(--gold)}
-  .btn-line.on-dark:hover{color:var(--forest)}
-  .btn-sm{padding:11px 18px;font-size:.92rem}
-  .btn-arrow::after{content:'→';display:inline-block;transition:transform .2s ease}
-  .btn-arrow:hover::after{transform:translateX(4px)}
+  /* nav — solid fallback first, then color-mix; both backdrop-filter prefixes */
+  header{position:sticky;top:0;z-index:60;background:rgba(251,248,240,.9);background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--line);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px;margin:0 auto;padding:0 28px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;letter-spacing:-.02em;color:var(--ink)}
+  .logo svg{flex:0 0 auto}
+  .ncall{font-weight:700;font-size:.92rem;color:var(--ink);display:inline-flex;align-items:center;gap:.5em;min-height:44px;padding:9px 16px;border-radius:980px;border:1px solid var(--line);transition:background .2s,border-color .2s}
+  .ncall:hover{background:var(--white);border-color:var(--gold)}
 
-  /* ── hero ── */
-  .hero{position:relative;overflow:hidden;background:
-     radial-gradient(120% 90% at 92% 8%, rgba(194,155,64,.14), transparent 55%),
-     radial-gradient(90% 80% at -5% 100%, rgba(62,107,69,.12), transparent 55%),
-     var(--bg)}
-  .hero-in{display:grid;grid-template-columns:1.32fr 1fr;gap:48px;align-items:center;padding:62px 26px 70px;max-width:1180px;margin:0 auto;position:relative;z-index:2}
-  .hero-copy .eyebrow{margin-bottom:22px}
-  .hero h1{font-size:clamp(2.7rem,6.4vw,4.7rem);color:var(--forest);font-weight:500;letter-spacing:-.035em;line-height:1.02}
-  .hero h1 em{font-style:italic;font-weight:400;color:var(--green)}
-  .hero .lede{font-size:clamp(1.06rem,1.7vw,1.24rem);color:var(--text);max-width:520px;margin:22px 0 30px;line-height:1.62}
-  .hero .lede b{font-weight:800;color:var(--forest)}
-  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-  .hero-note{margin-top:24px;font-size:.92rem;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:.5em}
-  .hero-note svg{color:var(--green)}
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;font-family:var(--d);font-weight:700;font-size:1.02rem;cursor:pointer;border:0;line-height:1;border-radius:980px;transition:transform .2s cubic-bezier(.34,1.4,.6,1),background .2s,color .2s,box-shadow .2s}
+  .btn-gold{background:var(--gold);color:#241c08;padding:16px 30px;box-shadow:0 14px 30px -14px rgba(194,155,64,.85)}
+  .btn-gold:hover{transform:translateY(-2px);background:var(--gold-lt)}
+  .btn-ink{background:var(--ink);color:var(--bg);padding:16px 30px}
+  .btn-ink:hover{transform:translateY(-2px)}
+  .btn-ghost{background:transparent;border:1.5px solid rgba(21,36,27,.28);border:1.5px solid color-mix(in srgb,var(--ink) 28%,transparent);color:var(--ink);padding:15px 28px}
+  .btn-ghost:hover{border-color:var(--ink)}
+  .btn-ghost.dk{border-color:rgba(251,248,240,.55);color:var(--bg)}
+  .btn-ghost.dk:hover{border-color:var(--gold-lt);color:var(--gold-lt)}
 
-  /* organic arched art / photo frame */
-  .hero-art{position:relative}
-  .arch{position:relative;aspect-ratio:1/1.16;border-radius:50% 50% 18px 18px / 42% 42% 18px 18px;
-     background:linear-gradient(165deg,#27482F,var(--forest));overflow:hidden;box-shadow:var(--sh-card);border:1px solid rgba(220,192,116,.25)}
-  .arch .grain{position:absolute;inset:0;opacity:.5;background:
-     radial-gradient(60% 50% at 70% 22%, rgba(194,155,64,.22), transparent 60%)}
-  .arch svg.bot{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);width:108%;opacity:.95}
-  .arch .frame-label{position:absolute;left:18px;top:18px;font-size:.78rem;font-weight:700;color:var(--gold-lt);background:rgba(0,0,0,.34);border:1px solid rgba(220,192,116,.3);padding:7px 12px;border-radius:999px;backdrop-filter:blur(3px)}
-  .arch .seal-lg{position:absolute;top:22px;right:22px;opacity:.92}
-  .badge-float{position:absolute;left:-18px;bottom:34px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:13px 17px;box-shadow:var(--sh-card);display:flex;align-items:center;gap:11px;max-width:215px}
-  .badge-float .ico{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--green) 16%, transparent);display:grid;place-items:center;color:var(--green);flex:0 0 auto}
-  .badge-float p{font-size:.82rem;line-height:1.3;font-weight:700;color:var(--text)}
-  .badge-float p span{display:block;font-weight:800;color:var(--gold-deep);font-size:.72rem;letter-spacing:.04em}
+  /* ── HERO (pinned: headline hands off to the product panel) ── */
+  .hero-track{position:relative;height:auto}
+  .scrub-on .hero-track{height:150vh}
+  .hero-stick{padding:clamp(56px,9vw,104px) 0 clamp(40px,7vw,80px)}
+  .scrub-on .hero-stick{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;padding-top:0;padding-bottom:0;overflow:hidden}
+  .hero-inner{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .hero-text{will-change:opacity,transform}
+  .hero .eyebrow{display:inline-block;margin-bottom:24px}
+  .hero h1{font-weight:800;font-size:clamp(2.9rem,8.4vw,6rem);line-height:.98;letter-spacing:-.045em;color:var(--ink);max-width:14ch;margin:0 auto}
+  .hero h1 em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--green);letter-spacing:-.02em}
+  .hero .sub{font-weight:300;font-size:clamp(1.15rem,2.3vw,1.55rem);color:var(--ink-2);max-width:38ch;margin:26px auto 34px;line-height:1.45}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+  .hero-meta{margin-top:22px;font-size:.92rem;color:var(--ink-2);font-weight:500}
+  .hero-stage{margin-top:clamp(40px,6vw,72px);position:relative;width:100%}
+  .stage-media{aspect-ratio:16/10;border-radius:28px;background:radial-gradient(120% 120% at 72% 18%,rgba(194,155,64,.22),transparent 56%),linear-gradient(165deg,#2C5036,var(--forest));box-shadow:var(--sh);position:relative;overflow:hidden;border:1px solid rgba(220,192,116,.22);will-change:transform;transform-origin:center 38%}
+  .stage-media .bot{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);width:46%;opacity:.95;min-width:240px}
+  .stage-media .tag{position:absolute;top:20px;left:22px;font-size:.8rem;font-weight:600;color:var(--gold-lt);background:rgba(0,0,0,.32);border:1px solid rgba(220,192,116,.3);padding:8px 13px;border-radius:980px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .hero-scrollcue{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:none;flex-direction:column;align-items:center;gap:7px;font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);will-change:opacity}
+  .scrub-on .hero-scrollcue{display:flex}
+  .hero-scrollcue .m{width:22px;height:34px;border:2px solid var(--green);border-radius:12px;position:relative}
+  .hero-scrollcue .m::after{content:'';position:absolute;left:50%;top:6px;transform:translateX(-50%);width:3px;height:7px;border-radius:2px;background:var(--gold);animation:wheel 1.5s ease-in-out infinite}
+  @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,11px)}}
 
-  /* ── trustline ── */
-  .trustline{border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);background:var(--surface-2)}
-  .trustline-in{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 30px;padding:18px 26px;max-width:1180px;margin:0 auto}
-  .trustline span{font-weight:800;font-size:.92rem;color:var(--forest);display:inline-flex;align-items:center;gap:.55em;letter-spacing:.01em}
-  .trustline span svg{color:var(--gold)}
-  .trustline .sep{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.6}
+  /* generic section */
+  section{padding:var(--pad) 0}
+  .center{text-align:center;max-width:760px;margin:0 auto}
+  h2{font-family:var(--d);font-weight:800;font-size:clamp(2.1rem,5vw,3.5rem);line-height:1.04;letter-spacing:-.035em;color:var(--ink)}
+  .lead{font-weight:300;font-size:clamp(1.1rem,2vw,1.4rem);color:var(--ink-2);line-height:1.5;margin-top:18px}
 
-  /* ── sections base ── */
-  section{padding:var(--u6) 0}
-  .head{max-width:600px;margin-bottom:var(--u4)}
-  .head.center{margin-left:auto;margin-right:auto;text-align:center}
-  .head h2{font-size:clamp(2rem,4.4vw,3.05rem);color:var(--forest);margin:14px 0 12px;font-weight:500;letter-spacing:-.03em;line-height:1.06}
-  .head p{font-size:1.1rem;color:var(--muted);line-height:1.6}
+  /* story — dark statement */
+  .story{background:var(--forest);color:var(--bg);text-align:center;position:relative;overflow:hidden}
+  .story::after{content:'';position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+  .story .in{position:relative;z-index:1;max-width:780px;margin:0 auto}
+  .story .eyebrow{display:inline-block;margin-bottom:26px}
+  .story .quote{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(1.9rem,4.6vw,3.2rem);line-height:1.18;color:#fff;letter-spacing:-.01em}
+  .story .quote b{color:var(--gold-lt);font-weight:500}
+  .story p{font-weight:300;font-size:clamp(1.05rem,1.8vw,1.22rem);color:#cdd6c5;line-height:1.6;margin:30px auto 0;max-width:60ch}
+  .story .sign{margin-top:30px;font-family:var(--serif);font-style:italic;font-size:1.25rem;color:#fff}
+  .story .sign small{display:block;font-family:var(--d);font-style:normal;font-weight:600;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--green-soft);margin-top:6px}
 
-  /* ── story (full-bleed forest, emotional core) ── */
-  .story{position:relative;background:linear-gradient(168deg,#1A3122,var(--forest));color:var(--bg);overflow:hidden}
-  .story::after{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  .story-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:54px;align-items:center;position:relative;z-index:1}
-  .story-frame{aspect-ratio:4/5;border-radius:46% 46% 16px 16px / 30% 30% 16px 16px;background:linear-gradient(160deg,#2C5036,#19301F);position:relative;overflow:hidden;border:1px solid rgba(220,192,116,.3)}
-  .story-frame .label{position:absolute;left:16px;bottom:16px;font-size:.78rem;font-weight:700;color:var(--gold-lt);background:rgba(0,0,0,.3);padding:7px 12px;border-radius:999px}
-  .story-frame svg{position:absolute;top:-14px;right:-14px;opacity:.2;color:var(--gold-lt)}
-  .story h2{color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);font-weight:500;letter-spacing:-.03em;margin:16px 0 0}
-  .pullquote{font-family:var(--font-d);font-style:italic;font-weight:400;font-size:clamp(1.45rem,2.6vw,2.05rem);line-height:1.28;color:var(--gold-lt);margin:24px 0;padding-left:22px;border-left:2px solid var(--gold)}
-  .story p{color:#d9e0d2;margin-bottom:15px;max-width:48ch}
-  .story .sign{margin-top:22px;font-family:var(--font-d);font-size:1.2rem;color:#fff;font-style:italic}
-  .story .sign small{display:block;font-family:var(--font-b);font-style:normal;font-weight:700;font-size:.8rem;letter-spacing:.04em;color:var(--green-soft);margin-top:4px;text-transform:uppercase}
+  /* ── SHOWPIECE: pinned scroll-scrubbed ANGLED wipe ── */
+  .show{padding:0;background:var(--bg);position:relative}
+  .show-track{position:relative;height:auto}                 /* no-JS / reduced-motion: collapses, shows clean */
+  .scrub-on .show-track{height:300vh}                        /* deliberate scrub, trimmed from 360 for senior comfort */
+  .show-stage{position:sticky;top:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(22px,3.4vw,34px);padding:84px 22px 40px;overflow:hidden}
+  .show-head{text-align:center;max-width:640px}
+  .show-head .eyebrow{display:inline-block;margin-bottom:12px}
+  .show-head h2{font-size:clamp(1.9rem,4.6vw,3.1rem)}
+  .show-head .lead{margin-top:12px;font-size:clamp(1.02rem,1.7vw,1.22rem)}
+  .staticonly{display:none}
+  html:not(.scrub-on) .scrubonly{display:none}
+  html:not(.scrub-on) .staticonly{display:inline}
+  .window{position:relative;width:min(960px,92vw);aspect-ratio:16/10;border-radius:26px;overflow:hidden;box-shadow:var(--sh);border:1px solid rgba(20,39,27,.08)}
+  @media(max-width:560px){.window{aspect-ratio:4/5}}
+  .layer{position:absolute;inset:0}
+  /* clean surface (revealed beneath) */
+  .clean{background:
+     radial-gradient(60% 48% at 30% 22%,rgba(255,255,255,.96),transparent 60%),
+     radial-gradient(54% 60% at 82% 80%,rgba(220,192,116,.22),transparent 60%),
+     linear-gradient(150deg,#FCF8EE,#EFE5CF)}
+  .clean .sheen{position:absolute;top:-25%;left:-30%;width:42%;height:160%;transform:rotate(15deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);filter:blur(5px)}
+  /* faint wet streaks left behind by the squeegee */
+  .streaks{position:absolute;inset:0;opacity:.5;background-image:repeating-linear-gradient(98deg,transparent 0 22px,rgba(255,255,255,.5) 22px 23px,transparent 23px 46px);mix-blend-mode:soft-light}
+  #sparkleTrail{position:absolute;inset:0}
+  .spk{position:absolute;width:9px;height:9px;border-radius:50%;opacity:0;background:radial-gradient(circle,#fff,rgba(220,192,116,.55) 42%,transparent 70%);box-shadow:0 0 10px rgba(220,192,116,.7)}
+  .show-near .spk{animation:twinkle 2.4s ease-in-out infinite}   /* only twinkle while the section is near view */
+  @keyframes twinkle{0%,100%{transform:scale(.65)}50%{transform:scale(1.05)}}
+  /* grimy surface (on top, wiped away on a diagonal). Smudges baked into the gradient (cheaper paint). */
+  .grime{-webkit-clip-path:inset(0 0 0 100%);clip-path:inset(0 0 0 100%);will-change:clip-path;background:
+     radial-gradient(22% 26% at 14% 22%,rgba(58,52,42,.42),transparent 60%),
+     radial-gradient(22% 26% at 58% 54%,rgba(58,52,42,.42),transparent 60%),
+     radial-gradient(22% 26% at 36% 68%,rgba(58,52,42,.42),transparent 60%),
+     radial-gradient(40% 50% at 25% 30%,rgba(120,112,92,.5),transparent 60%),
+     radial-gradient(46% 44% at 72% 66%,rgba(86,80,66,.55),transparent 62%),
+     linear-gradient(150deg,#8d8474,#5f594b)}
+  .scrub-on .grime{-webkit-clip-path:polygon(-10% -2%,104% -2%,104% 104%,-10% 104%);clip-path:polygon(-10% -2%,104% -2%,104% 104%,-10% 104%)}
+  .wtag{position:absolute;top:18px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border-radius:980px}
+  .wtag.b{left:18px;color:#fff;background:rgba(0,0,0,.42)}
+  .wtag.a{right:18px;color:#241c08;background:linear-gradient(135deg,var(--gold-lt),var(--gold));opacity:0}
+  html:not(.scrub-on) .wtag.a{opacity:1}   /* label the clean surface in the static/reduced-motion state */
+  /* spray-mist puff that leads the squeegee edge (moved via transform, not left) */
+  .mist{position:absolute;top:0;bottom:0;width:34%;left:0;opacity:0;pointer-events:none;will-change:transform,opacity;
+     background:radial-gradient(40% 30% at 50% 40%,rgba(255,255,255,.55),transparent 70%),radial-gradient(30% 22% at 60% 66%,rgba(255,255,255,.4),transparent 72%);
+     filter:blur(7px)}
+  /* angled squeegee light bar — tilt is set per-frame in JS to match the diagonal dirt edge */
+  .squee{position:absolute;top:-8%;height:116%;width:4px;left:0;opacity:0;transform-origin:center;
+     background:linear-gradient(180deg,transparent,var(--gold-lt),var(--gold),var(--gold-lt),transparent);
+     box-shadow:0 0 16px 3px rgba(220,192,116,.5);will-change:transform,opacity}
+  .squee::after{content:'';position:absolute;top:50%;left:50%;width:26px;height:5px;transform:translate(-50%,-50%);border-radius:3px;filter:blur(1px);background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),rgba(220,192,116,.55),transparent)}
+  .show-hint{display:flex;align-items:center;gap:.5em;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);will-change:opacity}
+  html:not(.scrub-on) .show-hint{display:none}
+  .show-hint .arr{width:18px;height:18px;border-right:2px solid var(--gold-deep);border-bottom:2px solid var(--gold-deep);transform:rotate(45deg);animation:nudge 1.5s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(3px,3px)}}
 
-  /* ── services (priority-driven) ── */
-  .svc{background:var(--bg)}
-  .svc-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:22px}
-  .svc-feature{grid-row:span 2;position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:38px 34px;display:flex;flex-direction:column;box-shadow:var(--sh-card)}
-  .svc-feature::before{content:'';position:absolute;inset:0;opacity:.5;pointer-events:none;background:radial-gradient(80% 60% at 90% 0%, rgba(194,155,64,.12), transparent 60%)}
-  .svc-feature .tag{align-self:flex-start;font-family:var(--font-b);font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#2c2410;background:linear-gradient(135deg,var(--gold-lt),var(--gold));padding:6px 13px;border-radius:999px;margin-bottom:20px;position:relative}
-  .svc-feature .big-ico{width:62px;height:62px;border-radius:18px;background:color-mix(in srgb,var(--green) 14%,transparent);display:grid;place-items:center;color:var(--green);margin-bottom:18px;position:relative}
-  .svc-feature h3{font-size:1.7rem;color:var(--forest);margin-bottom:12px;position:relative;letter-spacing:-.02em}
-  .svc-feature p{color:var(--muted);position:relative;margin-bottom:14px}
-  .svc-feature .micro{margin-top:auto;font-size:.84rem;font-weight:800;color:var(--gold-deep);position:relative;display:inline-flex;align-items:center;gap:.4em}
+  /* feature rows (Apple alternating) */
+  .feat{display:grid;grid-template-columns:1fr 1fr;gap:clamp(34px,6vw,84px);align-items:center}
+  .feat + .feat{margin-top:var(--pad)}
+  .feat.rev .f-copy{order:2}
+  .feat .kick{font-weight:700;font-size:.82rem;letter-spacing:.02em;color:var(--gold-deep);display:inline-flex;align-items:center;gap:.5em;margin-bottom:16px}
+  .feat h3{font-weight:800;font-size:clamp(1.8rem,3.6vw,2.7rem);line-height:1.06;letter-spacing:-.03em;color:var(--ink)}
+  .feat p{font-weight:300;font-size:clamp(1.05rem,1.7vw,1.22rem);color:var(--ink-2);line-height:1.55;margin-top:16px;max-width:46ch}
+  .feat .micro{margin-top:18px;font-size:.9rem;font-weight:700;color:var(--gold-deep)}
+  .f-media-wrap{overflow:hidden;border-radius:24px}
+  .f-media{aspect-ratio:5/4;border-radius:24px;position:relative;overflow:hidden;box-shadow:var(--sh);border:1px solid rgba(20,39,27,.06)}
+  .f-media.g1{background:radial-gradient(110% 110% at 30% 18%,rgba(220,192,116,.26),transparent 55%),linear-gradient(160deg,#2C5036,var(--forest))}
+  .f-media.g2{background:linear-gradient(160deg,#E9DFC8,#CFC09A)}
+  .f-media.g3{background:linear-gradient(160deg,#234433,#11241a)}
+  .f-media .ic{position:absolute;top:24px;left:24px;width:54px;height:54px;border-radius:15px;background:rgba(255,255,255,.14);display:grid;place-items:center;color:#fff;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .f-media.g2 .ic{background:rgba(20,39,27,.1);color:var(--forest)}
+  .f-media .tag{position:absolute;bottom:18px;left:18px;font-size:.76rem;font-weight:600;color:#fff;background:rgba(0,0,0,.34);padding:7px 12px;border-radius:980px}
+  .f-media.g2 .tag{color:var(--forest);background:rgba(255,255,255,.55)}
 
-  .svc-card{position:relative;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 16px 16px 0;padding:24px 26px;transition:border-left-width .22s ease,background .22s ease;display:flex;gap:18px;align-items:flex-start}
-  .svc-card:hover{border-left-width:8px;background:var(--surface-2)}
-  .svc-card .ico{width:46px;height:46px;border-radius:13px;background:color-mix(in srgb,var(--green) 13%,transparent);display:grid;place-items:center;color:var(--green);flex:0 0 auto}
-  .svc-card h3{font-size:1.22rem;color:var(--forest);margin-bottom:5px;letter-spacing:-.01em}
-  .svc-card p{color:var(--muted);font-size:.96rem;line-height:1.55}
-  .svc-card .micro{display:block;margin-top:8px;font-size:.8rem;font-weight:800;color:var(--gold-deep)}
+  /* products + scents */
+  .prod{background:var(--bg-2)}
+  .scents{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:36px}
+  .scent{display:inline-flex;align-items:center;gap:.55em;background:var(--white);border:1px solid var(--line);border-radius:980px;padding:11px 20px;font-weight:600;font-size:.98rem;color:var(--ink);transition:border-color .2s,transform .2s}
+  .scent:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .scent .dot{width:10px;height:10px;border-radius:50%}
 
-  /* ── craft band (textured) ── */
-  .craft{position:relative;background:var(--forest-2);color:var(--bg);overflow:hidden}
-  .craft::before{content:'';position:absolute;inset:0;opacity:.05;pointer-events:none;background-image:radial-gradient(rgba(220,192,116,.5) 1px,transparent 1px);background-size:22px 22px}
-  .craft-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
-  .craft h2{color:#fff;font-size:clamp(1.9rem,3.8vw,2.7rem);font-weight:500;letter-spacing:-.03em;margin:14px 0 14px}
-  .craft p{color:#d4dccb;margin-bottom:22px;max-width:46ch}
-  .craft-points{list-style:none;display:flex;flex-direction:column;gap:14px}
-  .craft-points li{display:flex;gap:14px;align-items:flex-start}
-  .craft-points .ck{width:30px;height:30px;border-radius:9px;background:color-mix(in srgb,var(--gold) 22%,transparent);color:var(--gold-lt);display:grid;place-items:center;flex:0 0 auto}
-  .craft-points b{display:block;color:#fff;font-size:1.02rem}
-  .craft-points span{color:#bdc8b2;font-size:.92rem}
-  .scents{margin-top:6px}
-  .scents .lab{font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--green-soft);margin-bottom:14px}
-  .scent-row{display:flex;flex-wrap:wrap;gap:11px}
-  .scent{display:inline-flex;align-items:center;gap:.5em;border:1px solid rgba(220,192,116,.35);background:rgba(255,255,255,.03);color:var(--bg);border-radius:999px;padding:9px 16px;font-weight:700;font-size:.92rem;transition:border-color .2s,background .2s}
-  .scent:hover{border-color:var(--gold);background:rgba(194,155,64,.12)}
-  .scent .dot{width:9px;height:9px;border-radius:50%}
+  /* testimonial */
+  .quote-sec{text-align:center}
+  .quote-sec .stars{color:var(--gold);letter-spacing:4px;font-size:1.1rem;margin-bottom:22px}
+  .quote-sec blockquote{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(1.8rem,4.4vw,3rem);line-height:1.2;color:var(--ink);max-width:18ch;margin:0 auto;letter-spacing:-.01em}
+  .quote-sec .who{margin-top:26px;font-weight:700;color:var(--gold-deep);font-size:.95rem}
+  .quote-sec .who span{color:var(--ink-2);font-weight:500}
 
-  /* ── proof / testimonials ── */
-  .proof{background:var(--bg-2)}
-  .proof-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:stretch}
-  .t-big{background:var(--surface);border-radius:22px;padding:40px 38px;box-shadow:var(--sh-card);position:relative;display:flex;flex-direction:column;justify-content:center}
-  .t-big .mark{font-family:var(--font-d);font-size:4.5rem;line-height:.6;color:var(--gold);opacity:.5;height:34px}
-  .t-big blockquote{font-family:var(--font-d);font-style:italic;font-weight:400;font-size:clamp(1.4rem,2.5vw,1.9rem);line-height:1.3;color:var(--forest);margin:10px 0 18px}
-  .t-big .who{font-weight:800;color:var(--gold-deep);font-size:.92rem}
-  .t-side{display:flex;flex-direction:column;gap:24px}
-  .t-mini{background:var(--forest);color:var(--bg);border-radius:22px;padding:30px;flex:1;display:flex;flex-direction:column;justify-content:center}
-  .t-mini .stars{color:var(--gold-lt);letter-spacing:3px;margin-bottom:12px;font-size:1rem}
-  .t-mini blockquote{font-family:var(--font-d);font-style:italic;font-size:1.3rem;line-height:1.32;color:#fff;margin-bottom:12px}
-  .t-mini .who{font-weight:700;color:var(--green-soft);font-size:.88rem}
-  .ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
-  .ba .shot{aspect-ratio:5/4;border-radius:16px;position:relative;overflow:hidden;display:flex;align-items:flex-end;border:1px solid var(--border)}
-  .ba .before{background:linear-gradient(150deg,#7d7361,#4a4438)}
-  .ba .after{background:linear-gradient(150deg,var(--green),#27482F)}
-  .ba .shot b{position:absolute;top:12px;left:12px;font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;font-weight:800;background:rgba(0,0,0,.4);color:#fff;padding:5px 11px;border-radius:999px}
-  .ba .shot span{margin:12px;font-size:.78rem;color:#fff;background:rgba(0,0,0,.36);padding:6px 11px;border-radius:999px}
+  /* contact */
+  .contact{text-align:center}
+  .contact h2{margin-bottom:10px}
+  .contact .lead{max-width:44ch;margin:14px auto 0}
+  .bigphone{display:inline-block;font-weight:800;font-size:clamp(2.6rem,7vw,4.4rem);letter-spacing:-.04em;color:var(--ink);margin:38px 0 6px;transition:color .2s}
+  .bigphone:hover{color:var(--green)}
+  .area{font-weight:600;color:var(--ink-2);font-size:.96rem}
+  .c-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:13px;margin:34px 0 8px}
+  .c-links{display:flex;flex-wrap:wrap;justify-content:center;gap:24px;margin-top:24px;font-weight:600;font-size:.94rem}
+  .c-links a{color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:2px;transition:color .2s,border-color .2s}
+  .c-links a:hover{color:var(--ink);border-color:var(--gold)}
 
-  /* ── contact ── */
-  .contact{position:relative;background:linear-gradient(168deg,#1A3122,var(--forest));color:var(--bg);overflow:hidden;text-align:center}
-  .contact::after{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E")}
-  .contact .in{position:relative;z-index:1;max-width:680px;margin:0 auto}
-  .contact h2{color:#fff;font-size:clamp(2.1rem,5vw,3.3rem);font-weight:500;letter-spacing:-.03em;margin:14px 0 14px}
-  .contact .lede{color:#d4dccb;font-size:1.12rem;max-width:520px;margin:0 auto 30px;line-height:1.6}
-  .phone{display:inline-block;font-family:var(--font-d);font-size:clamp(2rem,5vw,2.8rem);color:var(--gold-lt);font-weight:500;letter-spacing:.5px;margin-bottom:4px;transition:color .2s}
-  .phone:hover{color:#fff}
-  .area{color:var(--green-soft);font-weight:700;font-size:.92rem;letter-spacing:.05em;text-transform:uppercase}
-  .contact-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:13px;margin:28px 0 6px}
-  .links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px}
-  .links a{display:inline-flex;align-items:center;gap:.5em;border:1px solid rgba(244,236,218,.26);border-radius:999px;padding:10px 17px;color:var(--bg);font-weight:700;font-size:.9rem;transition:border-color .2s,color .2s}
-  .links a:hover{border-color:var(--gold-lt);color:var(--gold-lt)}
+  footer{background:var(--forest);color:#8e9b85;text-align:center;padding:40px 28px}
+  footer b{font-weight:800;color:var(--gold-lt);font-size:1.15rem;letter-spacing:-.02em}
+  footer .v{margin:9px 0;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#8e9b85;font-weight:700}
+  footer a{color:var(--gold-lt)}
 
-  /* ── footer ── */
-  footer{background:#0F1E15;color:#93a088;padding:40px 26px;text-align:center}
-  footer .fb{font-family:var(--font-d);color:var(--gold-lt);font-size:1.45rem;font-weight:600}
-  footer .v{margin:10px 0;font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:#7b8a72;font-weight:700}
-  footer a{color:var(--gold-lt);font-weight:700}
-  footer .fine{margin-top:14px;font-size:.74rem;color:#5f6e58;font-style:italic;font-family:var(--font-d)}
+  /* mobile call/text bar — solid fallback first, then color-mix; both backdrop-filter prefixes */
+  .floatbar{position:fixed;left:0;right:0;bottom:0;z-index:80;display:none;gap:11px;padding:11px 14px;background:#14271B;background:color-mix(in srgb,var(--forest) 95%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid rgba(220,192,116,.28)}
+  .floatbar .btn{flex:1;font-size:.98rem;padding:14px}
 
-  /* ── mobile floating call bar ── */
-  .floatbar{position:fixed;left:0;right:0;bottom:0;z-index:80;display:none;gap:11px;padding:11px 14px;background:color-mix(in srgb,var(--forest) 96%,transparent);backdrop-filter:blur(8px);border-top:1px solid rgba(220,192,116,.3)}
-  .floatbar .btn{flex:1}
+  .js .rv{opacity:0;transform:translateY(30px)}
+  .js .rv.in{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.2,.6,.2,1),transform .8s cubic-bezier(.2,.6,.2,1)}
+  .sm{display:none}
 
-  /* ── reveal (fail-open, motion-safe) ── */
-  .js .reveal{opacity:0;transform:translateY(22px)}
-  .js .reveal.in{opacity:1;transform:none;transition:opacity .6s ease,transform .6s ease}
-  .js .stagger>*{opacity:0;transform:translateY(18px)}
-  .js .stagger.in>*{opacity:1;transform:none;transition:opacity .55s ease,transform .55s ease}
-  .js .stagger.in>*:nth-child(2){transition-delay:80ms}
-  .js .stagger.in>*:nth-child(3){transition-delay:160ms}
-  .js .stagger.in>*:nth-child(4){transition-delay:240ms}
-
-  .sm-only{display:none}
-
-  @media (max-width:880px){
-    .hero-in{grid-template-columns:1fr;gap:34px}
-    .hero-art{max-width:380px}
-    .story-grid,.craft-in,.proof-grid{grid-template-columns:1fr;gap:30px}
-    .svc-grid{grid-template-columns:1fr}
-    .svc-feature{grid-row:auto}
-    .badge-float{left:auto;right:14px}
+  /* legacy fallback: if aspect-ratio is unsupported (iOS < 15), give the placeholder panels a height floor */
+  @supports not (aspect-ratio: 1 / 1){
+    .stage-media{min-height:62vw;max-height:480px}
+    .window{min-height:58vw}
+    .f-media{min-height:74vw;max-height:420px}
   }
-  @media (max-width:640px){
-    body{font-size:16px}
-    section{padding:var(--u5) 0}
-    .lg-only{display:none}
-    .sm-only{display:inline}
-    .brand small{display:none}
-    .floatbar{display:flex}
-    body{padding-bottom:72px}
-    .story-frame{aspect-ratio:5/4}
-    .ba{grid-template-columns:1fr 1fr}
-    .t-big{padding:30px 26px}
+
+  @media(max-width:820px){
+    .feat,.feat.rev .f-copy{grid-template-columns:1fr;order:0}
+    .feat{gap:28px}
   }
-  @media (prefers-reduced-motion:reduce){
-    .js .reveal,.js .stagger>*{opacity:1;transform:none}
-    .btn-primary::before{display:none}
+  @media(max-width:560px){
+    .lg{display:none}.sm{display:inline}
+    .floatbar{display:flex}body{padding-bottom:74px}
+    .hero-cta .btn,.c-cta .btn{flex:1 1 auto}
+    .scrub-on .hero-track{height:130vh}
+    .scrub-on .show-track{height:230vh}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .js .rv{opacity:1;transform:none}
     html{scroll-behavior:auto}
+    .btn{transition:none}
+    .show-hint,.hero-scrollcue{display:none}
+    .spk{animation:none}
   }
 </style>
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
-<div class="draft">✦ Draft preview for Amanda · v2</div>
+<a class="skip" href="#contact">Skip to phone &amp; contact</a>
+<div id="prog" aria-hidden="true"></div>
 
-<header class="nav">
-  <div class="nav-in">
-    <a class="brand" href="#top" aria-label="Golden Touch Cleaning Services home">
-      <span class="seal" aria-hidden="true">
-        <svg width="38" height="38" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="22.5" stroke="#C29B40" stroke-width="1.4"/>
-          <circle cx="24" cy="24" r="18" stroke="#C29B40" stroke-width=".6" opacity=".5"/>
-          <path d="M24 14c-3.4 3.6-6 6.6-6 10.6a6 6 0 0012 0c0-4-2.6-7-6-10.6z" fill="#C29B40"/>
-          <path d="M24 31.5c0-3.4 1.6-6 4.3-7.8" stroke="#15281C" stroke-width="1.3" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span><b>Golden Touch</b><small>Cleaning Services</small></span>
+<header>
+  <nav class="nav">
+    <a class="logo" href="#top">
+      <svg width="26" height="26" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="22" stroke="#C29B40" stroke-width="1.5"/><path d="M24 14c-3.4 3.6-6 6.6-6 10.6a6 6 0 0012 0c0-4-2.6-7-6-10.6z" fill="#C29B40"/></svg>
+      Golden Touch
     </a>
-    <a class="btn btn-primary btn-sm" href="tel:+17052827840"><span class="lg-only">Call · 705-282-7840</span><span class="sm-only">📞 Call</span></a>
-  </div>
+    <a class="ncall" href="tel:+17052827840" aria-label="Call Golden Touch Cleaning"><span class="lg">Call · 705-282-7840</span><span class="sm">📞 Call</span></a>
+  </nav>
 </header>
 
+<main>
 <a id="top"></a>
-<section class="hero">
-  <div class="hero-in">
-    <div class="hero-copy reveal">
-      <span class="eyebrow">Espanola · Massey · Manitoulin Island</span>
-      <h1>A Higher<br/>Standard of <em>Clean</em></h1>
-      <p class="lede">Eco-friendly, non-toxic cleaning and <b>caring home support</b> — for families, busy households, and the seniors who deserve to feel safe and comfortable in their own homes.</p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="tel:+17052827840">Call or Text for a Free Quote</a>
-        <a class="btn btn-line btn-arrow" href="#story">Read Amanda's story</a>
+<section class="hero" id="heroSec">
+  <div class="hero-track" id="heroTrack">
+    <div class="hero-stick">
+      <div class="wrap hero-inner">
+        <div class="hero-text" id="heroText">
+          <span class="eyebrow">Espanola · Massey · Manitoulin Island</span>
+          <h1>A higher standard<br/>of <em>clean.</em></h1>
+          <p class="sub">Eco-friendly, non-toxic cleaning and caring home support — made for families, busy households, and the seniors who deserve to feel safe at home.</p>
+          <div class="hero-cta">
+            <a class="btn btn-gold" href="tel:+17052827840">Call or Text for a Free Quote</a>
+            <a class="btn btn-ghost" href="#story">Her story</a>
+          </div>
+          <p class="hero-meta">Handmade, non-toxic products · customized to your scent</p>
+        </div>
+        <div class="hero-stage">
+          <div class="stage-media" id="heroPanel">
+            <span class="tag">📷 Photo of Amanda — coming</span>
+            <svg class="bot" viewBox="0 0 200 120" fill="none" aria-hidden="true"><path d="M100 120C70 96 55 70 55 44c20 6 38 26 45 76z" fill="#3E6B45"/><path d="M100 120C130 96 145 66 145 38c-20 8-38 30-45 82z" fill="#5E8B3A" opacity=".85"/><path d="M100 120C92 92 86 70 86 50c10 6 17 24 14 70z" fill="#DCC074" opacity=".8"/></svg>
+          </div>
+        </div>
       </div>
-      <div class="hero-note">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Handmade, non-toxic products · customized to your preferred scent
-      </div>
-    </div>
-    <div class="hero-art reveal">
-      <div class="arch">
-        <div class="grain"></div>
-        <span class="seal-lg" aria-hidden="true">
-          <svg width="46" height="46" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="#DCC074" stroke-width="1" opacity=".7"/><path d="M24 15c-3 3.2-5.4 5.8-5.4 9.4a5.4 5.4 0 0010.8 0c0-3.6-2.4-6.2-5.4-9.4z" fill="#DCC074" opacity=".9"/></svg>
-        </span>
-        <svg class="bot" viewBox="0 0 200 120" fill="none" aria-hidden="true">
-          <path d="M100 120C70 96 55 70 55 44c20 6 38 26 45 76z" fill="#3E6B45"/>
-          <path d="M100 120C130 96 145 66 145 38c-20 8-38 30-45 82z" fill="#5E8B3A" opacity=".85"/>
-          <path d="M100 120C92 92 86 70 86 50c10 6 17 24 14 70z" fill="#DCC074" opacity=".8"/>
-          <path d="M100 120V58" stroke="#DCC074" stroke-width="1.4" opacity=".6"/>
-        </svg>
-        <span class="frame-label">📷 Photo of Amanda — coming</span>
-      </div>
-      <div class="badge-float" aria-hidden="true">
-        <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.6-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.4-7 10-7 10z" stroke-linejoin="round"/></svg></span>
-        <p><span>Founded On</span>Caring for seniors at home</p>
-      </div>
+      <a class="hero-scrollcue" id="heroCue" href="#story" aria-hidden="true" tabindex="-1"><span class="m"></span>Scroll</a>
     </div>
   </div>
 </section>
-
-<div class="trustline reveal">
-  <div class="trustline-in">
-    <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6z" stroke-linejoin="round"/></svg> Trusted &amp; Reliable</span>
-    <i class="sep"></i>
-    <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg> Thorough Cleaning</span>
-    <i class="sep"></i>
-    <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-5-3-8-7-8-12 5 0 8 3 8 8m0 4c5-3 8-7 8-12-5 0-8 3-8 8" stroke-linecap="round" stroke-linejoin="round"/></svg> Eco-Friendly Products</span>
-    <i class="sep"></i>
-    <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z" stroke-linejoin="round"/></svg> Exceptional Care</span>
-  </div>
-</div>
 
 <section class="story" id="story">
-  <div class="wrap">
-    <div class="story-grid">
-      <div class="story-frame reveal">
-        <svg width="150" height="150" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 92C34 80 26 62 26 45 39 50 50 64 50 92Z" fill="currentColor"/><path d="M50 92C66 80 74 58 74 38 58 45 50 64 50 92Z" fill="currentColor"/></svg>
-        <span class="label">📷 Amanda at work — coming</span>
-      </div>
-      <div class="story-body reveal">
-        <span class="eyebrow on-dark">The Heart Behind Golden Touch</span>
-        <h2>More than cleaning — it's personal.</h2>
-        <p class="pullquote">"No one should ever feel alone or unsafe in their own home."</p>
-        <p>After my grandfather passed, I traveled to help my grandmother. She'd been living alone, far from family, trying to cope with the loss of her partner of 47 years — and her home had become too much to manage.</p>
-        <p>The moment I walked through the door, she fell into my arms and cried. In that moment, something changed in me. I saw how something as simple as a clean, comfortable space can restore dignity, independence, and peace of mind.</p>
-        <div class="sign">Amanda<small>Founder · Golden Touch Cleaning Services</small></div>
-      </div>
+  <div class="wrap in">
+    <div class="in rv">
+      <span class="eyebrow dk">The heart behind Golden Touch</span>
+      <p class="quote">It began the day I walked into my grandmother's home — and she fell into my arms and cried. <b>No one should ever feel alone or unsafe in their own home.</b></p>
+      <p>After my grandfather passed, I traveled to help my grandmother — living alone, far from family, after losing her partner of 47 years. Her home had become too much to manage. I saw how something as simple as a clean, comfortable space can restore dignity, independence, and peace of mind. That's why Golden Touch exists.</p>
+      <div class="sign">Amanda<small>Founder · Golden Touch Cleaning Services</small></div>
     </div>
   </div>
 </section>
 
-<section class="svc">
-  <div class="wrap">
-    <div class="head reveal">
-      <span class="eyebrow">What I Offer</span>
-      <h2>Caring help, tailored to you</h2>
-      <p>Every home — and every person — is different. Each visit is shaped around exactly what you need, with handmade, non-toxic products scented just the way you like.</p>
+<!-- SHOWPIECE: scroll to wipe it clean — angled squeegee + mist + sparkle trail -->
+<section class="show" id="difference" aria-label="Before and after: a grimy surface wiped spotless">
+  <div class="show-track" id="wipeTrack">
+    <div class="show-stage">
+      <div class="show-head">
+        <span class="eyebrow">The Golden Touch</span>
+        <h2><span class="scrubonly">Watch the difference appear.</span><span class="staticonly">A spotless finish, every time.</span></h2>
+        <p class="lead"><span class="scrubonly">Keep scrolling — wash the dust away and reveal the shine.</span><span class="staticonly">Handmade, non-toxic products that leave every surface clean and bright.</span></p>
+      </div>
+      <div class="window" role="img" aria-label="A grimy surface wiped clean to a spotless, gleaming finish">
+        <div class="layer clean" aria-hidden="true">
+          <div class="sheen"></div>
+          <div class="streaks"></div>
+          <div id="sparkleTrail"></div>
+          <span class="wtag a" id="tagAfter">After ✦ Spotless</span>
+        </div>
+        <div class="layer grime" id="wipeBefore" aria-hidden="true">
+          <span class="wtag b" id="tagBefore">Before</span>
+        </div>
+        <div class="mist" id="mist" aria-hidden="true"></div>
+        <div class="squee" id="squee" aria-hidden="true"></div>
+      </div>
+      <div class="show-hint" id="showHint" aria-hidden="true"><span class="arr"></span>Scroll to clean</div>
     </div>
-    <div class="svc-grid stagger reveal">
-      <article class="svc-feature">
-        <span class="tag">★ My Specialty</span>
-        <div class="big-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z" stroke-linejoin="round"/><path d="M7 21h10" stroke-linecap="round" opacity=".55"/></svg></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="center rv" style="margin-bottom:clamp(48px,7vw,88px)">
+      <h2>Caring help, tailored to you.</h2>
+      <p class="lead">Four ways to make a home feel cared for — each visit shaped around exactly what you need.</p>
+    </div>
+
+    <div class="feat rv">
+      <div class="f-copy">
+        <span class="kick">★ The specialty — why Golden Touch exists</span>
         <h3>Senior Support &amp; Organization</h3>
         <p>Helping seniors clean, organize, and feel supported, respected, and safe at home — restoring dignity, independence, and peace of mind, with patience and genuine care.</p>
-        <p>The reason Golden Touch exists. If you or a loved one could use a steady, trustworthy helping hand, I'd be honoured to support you.</p>
-        <span class="micro">Home support &amp; organization · not medical care</span>
-      </article>
-      <article class="svc-card">
-        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 11l8-7 8 7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9h12v-9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <div><h3>Residential &amp; Airbnb Cleaning</h3><p>Homes, apartments, rentals &amp; short-term stays. One-time deep cleans, move-in / move-out, or recurring weekly &amp; biweekly visits.</p><span class="micro">Customized to your needs</span></div>
-      </article>
-      <article class="svc-card">
-        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 13l2-5a2 2 0 012-1.4h8A2 2 0 0117 8l2 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h18v4H3z" stroke-linejoin="round"/><circle cx="7.5" cy="17" r="1.4"/><circle cx="16.5" cy="17" r="1.4"/></svg></span>
-        <div><h3>Eco Car Detailing</h3><p>A spotless interior reset — carpets, console, every hard-to-reach corner — finished with non-toxic, handmade cleaners and your favourite scent.</p><span class="micro">Interior detailing</span></div>
-      </article>
-      <article class="svc-card">
-        <span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3h4v3h-4z" stroke-linejoin="round"/><path d="M9 6h6l1.4 3v10a2 2 0 01-2 2H9.6a2 2 0 01-2-2V9z" stroke-linejoin="round"/><path d="M9.5 13h5" stroke-linecap="round"/></svg></span>
-        <div><h3>Handmade Eco Products</h3><p>Every clean uses my own low-toxicity, earth-friendly products — gentle on your family, pets, and the planet, scented to your taste.</p><span class="micro">Safe for kids, pets &amp; seniors</span></div>
-      </article>
+        <div class="micro">Home support &amp; organization · not medical care</div>
+      </div>
+      <div class="f-media-wrap"><div class="f-media g1" data-par>
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z" stroke-linejoin="round"/></svg></span>
+        <span class="tag">Supporting independence in your golden years</span>
+      </div></div>
+    </div>
+
+    <div class="feat rev rv">
+      <div class="f-copy">
+        <span class="kick">Homes · rentals · Airbnbs</span>
+        <h3>Residential &amp; Airbnb Cleaning</h3>
+        <p>One-time deep cleans, move-in / move-out, or recurring weekly &amp; biweekly visits that keep your space effortlessly fresh.</p>
+        <div class="micro">Customized to your needs</div>
+      </div>
+      <div class="f-media-wrap"><div class="f-media g2" data-par>
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 11l8-7 8 7M6 10v9h12v-9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="tag">Fresh, every visit</span>
+      </div></div>
+    </div>
+
+    <div class="feat rv">
+      <div class="f-copy">
+        <span class="kick">Eco interior detailing</span>
+        <h3>Car Detailing, the gentle way</h3>
+        <p>A spotless interior reset — carpets, console, every hard-to-reach corner — finished with non-toxic, handmade cleaners and your favourite scent.</p>
+        <div class="micro">Interior detailing</div>
+      </div>
+      <div class="f-media-wrap"><div class="f-media g3" data-par>
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 13l2-5a2 2 0 012-1.4h8A2 2 0 0117 8l2 5M3 13h18v4H3z" stroke-linejoin="round"/><circle cx="7.5" cy="17" r="1.4"/><circle cx="16.5" cy="17" r="1.4"/></svg></span>
+        <span class="tag">Spotless &amp; non-toxic</span>
+      </div></div>
     </div>
   </div>
 </section>
 
-<section class="craft">
-  <div class="wrap craft-in">
-    <div class="reveal">
-      <span class="eyebrow on-dark">The Golden Touch Difference</span>
-      <h2>Powerful clean. Gentler on what matters.</h2>
-      <p>Handcrafted, low-toxicity, and freshly made — because your home deserves better than a cupboard full of harsh chemicals.</p>
-      <ul class="craft-points">
-        <li><span class="ck"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>Eco-conscious &amp; non-toxic</b><span>Formulas you can feel good about, made by hand.</span></div></li>
-        <li><span class="ck"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>Safe for family, pets &amp; seniors</b><span>Gentle enough for little ones and sensitive homes.</span></div></li>
-        <li><span class="ck"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>Customized to your space</b><span>The right approach for your home, every visit.</span></div></li>
-      </ul>
-    </div>
-    <div class="scents reveal">
-      <div class="lab">Choose your scent</div>
-      <div class="scent-row">
-        <span class="scent"><i class="dot" style="background:#9b8ec9"></i>Lavender</span>
-        <span class="scent"><i class="dot" style="background:#e0a341"></i>Citrus</span>
-        <span class="scent"><i class="dot" style="background:#6ea15a"></i>Eucalyptus</span>
-        <span class="scent"><i class="dot" style="background:#3f7d4a"></i>Pine</span>
-        <span class="scent"><i class="dot" style="background:#d9c08a"></i>Vanilla</span>
-        <span class="scent"><i class="dot" style="background:var(--gold)"></i>Your choice</span>
-      </div>
+<section class="prod">
+  <div class="wrap center rv">
+    <span class="eyebrow">The Golden Touch difference</span>
+    <h2 style="margin-top:14px">Powerful clean.<br/>Gentler on what matters.</h2>
+    <p class="lead">Handmade, low-toxicity products — safe for your family, your pets, and the people you love. Choose the scent that makes home feel like home.</p>
+    <div class="scents">
+      <span class="scent"><i class="dot" style="background:#9b8ec9"></i>Lavender</span>
+      <span class="scent"><i class="dot" style="background:#e0a341"></i>Citrus</span>
+      <span class="scent"><i class="dot" style="background:#6ea15a"></i>Eucalyptus</span>
+      <span class="scent"><i class="dot" style="background:#3f7d4a"></i>Pine</span>
+      <span class="scent"><i class="dot" style="background:#d9c08a"></i>Vanilla</span>
+      <span class="scent"><i class="dot" style="background:#C29B40"></i>Your choice</span>
     </div>
   </div>
 </section>
 
-<section class="proof">
-  <div class="wrap">
-    <div class="head center reveal">
-      <span class="eyebrow center">Kind Words</span>
-      <h2>Real results, real care</h2>
-      <p>From neighbours who've seen the difference first-hand.</p>
-    </div>
-    <div class="proof-grid reveal">
-      <figure class="t-big">
-        <div class="mark">&ldquo;</div>
-        <blockquote>Holy cow! I can't even get my car that clean!! Awesome job Amanda!</blockquote>
-        <figcaption class="who">— Deserea H. · Espanola</figcaption>
-      </figure>
-      <div class="t-side">
-        <figure class="t-mini">
-          <div class="stars">★★★★★</div>
-          <blockquote>AWESOME! AWESOME! AWESOME!</blockquote>
-          <figcaption class="who">— Cheryl M.</figcaption>
-        </figure>
-      </div>
-    </div>
-    <div class="ba reveal">
-      <div class="shot before"><b>Before</b><span>📷 Your "before" photo</span></div>
-      <div class="shot after"><b>After</b><span>📷 Your "after" photo</span></div>
-    </div>
+<section class="quote-sec">
+  <div class="wrap rv">
+    <div class="stars">★★★★★</div>
+    <blockquote>"Holy cow! I can't even get my car that clean. Awesome job, Amanda!"</blockquote>
+    <div class="who">Deserea H. <span>· Espanola</span></div>
   </div>
 </section>
 
 <section class="contact" id="contact">
-  <div class="wrap in reveal">
-    <span class="eyebrow on-dark center">Book Your Clean</span>
-    <h2>Let's take it off your list.</h2>
-    <p class="lede">Call or text for a free, no-pressure quote — I'd be honoured to help you, or someone you love, feel at home again.</p>
-    <a class="phone" href="tel:+17052827840">705-282-7840</a>
+  <div class="wrap rv">
+    <span class="eyebrow">Book your clean</span>
+    <h2 style="margin-top:14px">Let's take it off your list.</h2>
+    <p class="lead">Call or text for a free, no-pressure quote. I'd be honoured to help you — or someone you love — feel at home again.</p>
+    <a class="bigphone" href="tel:+17052827840">705-282-7840</a>
     <div class="area">Serving Espanola, Massey &amp; Manitoulin Island</div>
-    <div class="contact-cta">
-      <a class="btn btn-primary" href="tel:+17052827840">📞 Call Now</a>
-      <a class="btn btn-line on-dark" href="sms:+17052827840">💬 Text Me</a>
-      <a class="btn btn-line on-dark" href="https://wa.me/17052827840" target="_blank" rel="noopener">WhatsApp</a>
+    <div class="c-cta">
+      <a class="btn btn-gold" href="tel:+17052827840">📞 Call Now</a>
+      <a class="btn btn-ghost" href="sms:+17052827840">💬 Text Me</a>
+      <a class="btn btn-ghost" href="https://wa.me/17052827840" target="_blank" rel="noopener">WhatsApp</a>
     </div>
-    <div class="links">
-      <a href="mailto:goldentouchcleaning9@gmail.com">✉️ goldentouchcleaning9@gmail.com</a>
-      <a href="https://www.facebook.com/goldentouchcleaningservicesinc" target="_blank" rel="noopener">📘 Facebook</a>
+    <div class="c-links">
+      <a href="mailto:goldentouchcleaning9@gmail.com">goldentouchcleaning9@gmail.com</a>
+      <a href="https://www.facebook.com/goldentouchcleaningservicesinc" target="_blank" rel="noopener">Facebook</a>
     </div>
   </div>
 </section>
+</main>
 
 <footer>
-  <div class="fb">Golden Touch Cleaning Services</div>
+  <b>Golden Touch Cleaning Services</b>
   <div class="v">Eco-Friendly · Non-Toxic · Trusted</div>
-  <div style="font-size:.92rem">Call or text <a href="tel:+17052827840">705-282-7840</a> · Espanola &amp; surrounding areas</div>
-  <div class="fine">It's more than clean — it's the Golden Touch.</div>
+  <div style="font-size:.9rem">Call or text <a href="tel:+17052827840">705-282-7840</a> · Espanola &amp; surrounding areas</div>
 </footer>
 
 <div class="floatbar">
-  <a class="btn btn-line on-dark" href="sms:+17052827840">💬 Text</a>
-  <a class="btn btn-primary" href="tel:+17052827840">📞 Call Now</a>
+  <a class="btn btn-ghost dk" href="sms:+17052827840">💬 Text</a>
+  <a class="btn btn-gold" href="tel:+17052827840">📞 Call Now</a>
 </div>
 
 <script>
-  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.14});
-  document.querySelectorAll('.reveal,.stagger').forEach(el=>io.observe(el));
+(function(){
+  "use strict";
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Build the sparkle trail (positions spread across the panel) */
+  var trail = document.getElementById('sparkleTrail');
+  var SPARKS = [
+    [12,28,9],[20,58,7],[28,40,6],[34,74,8],[42,22,7],[50,52,10],
+    [57,34,6],[63,70,8],[70,46,7],[77,26,9],[84,62,7],[90,44,6]
+  ];
+  var spkEls = [];
+  if(trail){
+    SPARKS.forEach(function(s, i){
+      var el = document.createElement('span');
+      el.className = 'spk';
+      el.style.left = s[0] + '%'; el.style.top = s[1] + '%';
+      el.style.width = s[2] + 'px'; el.style.height = s[2] + 'px';
+      el.style.animationDelay = (i * 0.17).toFixed(2) + 's';
+      el.dataset.x = s[0];
+      trail.appendChild(el);
+      spkEls.push(el);
+    });
+  }
+
+  /* Reveals on enter — guarded so missing IntersectionObserver still shows all content */
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
+    }, {threshold:.12});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+    /* Gate the sparkle twinkle to when the showpiece is near view (battery on older phones) */
+    var showSec = document.getElementById('difference');
+    if(trail && showSec){
+      var showObs = new IntersectionObserver(function(es){
+        es.forEach(function(x){ trail.classList.toggle('show-near', x.isIntersecting); });
+      }, {rootMargin:'200px 0px'});
+      showObs.observe(showSec);
+    }
+  }
+
+  /* Reduced motion: no scrub. CSS shows clean labeled surface + static hero. */
+  if(reduce) return;
+  root.classList.add('scrub-on');
+
+  function clamp(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function smooth(a, b, x){ x = clamp((x - a) / (b - a)); return x * x * (3 - 2 * x); }
+
+  var prog      = document.getElementById('prog');
+  var heroTrack = document.getElementById('heroTrack');
+  var heroText  = document.getElementById('heroText');
+  var heroPanel = document.getElementById('heroPanel');
+  var heroCue   = document.getElementById('heroCue');
+  var track     = document.getElementById('wipeTrack');
+  var before    = document.getElementById('wipeBefore');
+  var squee     = document.getElementById('squee');
+  var mist      = document.getElementById('mist');
+  var tagBefore = document.getElementById('tagBefore');
+  var tagAfter  = document.getElementById('tagAfter');
+  var hint      = document.getElementById('showHint');
+  var pars      = [].slice.call(document.querySelectorAll('[data-par]'));
+
+  var S = 9;            // diagonal skew of the squeegee edge (in %)
+  var OVER = S + 5;     // overscan so the wipe fully clears both ends
+
+  var dirty = true;
+  function flag(){ dirty = true; }
+  window.addEventListener('scroll', flag, {passive:true});
+  window.addEventListener('resize', flag, {passive:true});
+
+  function tick(){
+    requestAnimationFrame(tick);
+    if(!dirty) return;
+    dirty = false;
+
+    var H = window.innerHeight;
+    var y = window.pageYOffset;
+
+    /* ── read phase (batch geometry to avoid layout thrash) ── */
+    var heroR = heroTrack ? heroTrack.getBoundingClientRect() : null;
+    var wipeR = track ? track.getBoundingClientRect() : null;
+    var parR = [];
+    for(var i = 0; i < pars.length; i++){ parR.push(pars[i].getBoundingClientRect()); }
+    var docMax = document.body.scrollHeight - H;
+
+    /* ── write phase ── */
+    if(prog) prog.style.transform = 'scaleX(' + (docMax > 0 ? clamp(y / docMax) : 0) + ')';
+
+    /* HERO pin: headline hands off to the product panel, which scales up then SETTLES */
+    if(heroR && heroPanel){
+      var span = heroR.height - H;
+      var hp = span > 0 ? clamp(-heroR.top / span) : 0;
+      var hpSettle = smooth(0, 0.6, hp);   // reach resting pose as the headline finishes fading, then hold
+      heroPanel.style.transform = 'translateY(' + (16 - hpSettle * H * 0.18).toFixed(1) + 'px) scale(' + (0.95 + hpSettle * 0.10).toFixed(3) + ')';
+      if(heroText){
+        if(hp < 0.1){ heroText.style.opacity = ''; heroText.style.transform = ''; }
+        else { var ht = smooth(0.1, 0.55, hp); heroText.style.opacity = (1 - ht).toFixed(3); heroText.style.transform = 'translateY(' + (-ht * 60).toFixed(1) + 'px)'; }
+      }
+      if(heroCue) heroCue.style.opacity = (1 - smooth(0.02, 0.16, hp)).toFixed(3);
+    }
+
+    /* feature media — drift as they pass through the viewport (held at scale so no edge shows) */
+    for(var j = 0; j < pars.length; j++){
+      var r = parR[j];
+      var p = clamp((H - r.top) / (H + r.height));
+      pars[j].style.transform = 'translateY(' + ((0.5 - p) * 56).toFixed(1) + 'px) scale(1.06)';
+    }
+
+    /* SHOWPIECE — pinned progress drives the angled wipe + mist + sparkle trail */
+    if(wipeR && before){
+      var wspan = wipeR.height - H;
+      var p2 = wspan > 0 ? clamp(-wipeR.top / wspan) : 0;
+      var ww = wipeR.width, hh = wipeR.height;
+      var sweep = -OVER + p2 * (100 + 2 * OVER);     // squeegee edge position, -OVER → 100+OVER (% of width)
+      // diagonal grime: left edge runs (sweep-S,0) → (sweep+S,100)
+      var poly = 'polygon(' + (sweep - S).toFixed(2) + '% -2%, 104% -2%, 104% 104%, ' + (sweep + S).toFixed(2) + '% 104%)';
+      before.style.webkitClipPath = poly;
+      before.style.clipPath = poly;
+      var wiping = p2 > 0.003 && p2 < 0.997;
+      // squeegee: translateX to the edge + tilt MATCHED to the diagonal (negative = leans with the dirt edge)
+      var ang = Math.atan2(2 * S / 100 * ww, 1.06 * hh) * 180 / Math.PI;
+      if(squee){
+        squee.style.transform = 'translateX(' + ((sweep / 100) * ww).toFixed(1) + 'px) rotate(' + (-ang).toFixed(2) + 'deg)';
+        squee.style.opacity = wiping ? '1' : '0';
+      }
+      if(mist){
+        mist.style.transform = 'translateX(' + (((sweep - 17) / 100) * ww).toFixed(1) + 'px)';   // puff leads the edge
+        mist.style.opacity = wiping ? (0.55 * smooth(0, 0.06, p2) * (1 - smooth(0.94, 1, p2))).toFixed(3) : '0';
+      }
+      // sparkle trail: each sparkle blooms just AFTER the edge passes its x
+      for(var k = 0; k < spkEls.length; k++){
+        var sx = +spkEls[k].dataset.x;
+        spkEls[k].style.opacity = clamp((sweep - sx) / 7).toFixed(3);
+      }
+      if(tagBefore) tagBefore.style.opacity = (1 - smooth(0.5, 0.82, p2)).toFixed(3);
+      if(tagAfter)  tagAfter.style.opacity  = smooth(0.6, 0.94, p2).toFixed(3);
+      if(hint)      hint.style.opacity       = (1 - smooth(0.02, 0.14, p2)).toFixed(3);
+    }
+  }
+  requestAnimationFrame(tick);
+})();
 </script>
 </body>
 </html>
